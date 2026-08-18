@@ -1,0 +1,147 @@
+"""
+🚀 TEKNOFEST İNME TEŞHİSİ - TAM KURULUM VE EĞİTİM
+Colab'de bu kodu tek bir hücrede çalıştırın!
+"""
+
+print("=" * 70)
+print("🚀 TEKNOFEST İNME TEŞHİSİ - TAM KURULUM VE EĞİTİM")
+print("=" * 70)
+
+# ============================================================================
+# ADIM 1: Proje Klasörüne Geç
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 1: Proje Klasörüne Geçiliyor...")
+print("=" * 70)
+
+import os
+if os.path.exists('/content/Teknofest'):
+    os.chdir('/content/Teknofest')
+    print(f"✅ Proje dizini: {os.getcwd()}")
+else:
+    print("⚠️ Teknofest klasörü bulunamadı!")
+    !ls -la /content/
+
+# ============================================================================
+# ADIM 2: Kütüphaneleri Kur
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 2: Kütüphaneler Kuruluyor...")
+print("=" * 70)
+
+print("📚 Kütüphaneler kuruluyor...")
+
+# ÖNEMLİ: Önce mevcut numpy'yi kaldır (uyumsuzluk sorununu çözmek için)
+!pip uninstall -y numpy
+
+# NumPy'yi uyumlu versiyona kur (TensorFlow uyumluluğu için)
+!pip install -q "numpy<1.26"
+
+# Sonra diğer kütüphaneleri kur
+!pip install -q tensorflow==2.16.1 keras==3.0.5
+!pip install -q pandas==2.2.0
+!pip install -q opencv-python==4.9.0.80 Pillow==10.2.0
+!pip install -q scikit-learn==1.4.0 pydicom==2.4.4
+!pip install -q matplotlib==3.8.2 seaborn==0.13.2
+
+print("✅ Kütüphaneler kuruldu!")
+
+# ============================================================================
+# ADIM 3: GPU Kontrolü
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 3: GPU Kontrolü")
+print("=" * 70)
+
+import tensorflow as tf
+print(f"TensorFlow versiyonu: {tf.__version__}")
+
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    print(f"✅ GPU bulundu: {len(gpus)} adet")
+    for i, gpu in enumerate(gpus):
+        print(f"  GPU {i+1}: {gpu}")
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        print("✅ GPU bellek büyümesi aktif")
+    except RuntimeError as e:
+        print(f"⚠️ GPU ayarı hatası: {e}")
+else:
+    print("❌ GPU bulunamadı! Runtime → Change runtime type → GPU seçin")
+
+# ============================================================================
+# ADIM 4: Veri Setini Kontrol Et
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 4: Veri Seti Kontrolü")
+print("=" * 70)
+
+import config
+from pathlib import Path
+
+print(f"İskemi dizini: {config.ISKEMI_DIR}")
+print(f"İskemi var mı: {config.ISKEMI_DIR.exists()}")
+
+print(f"\nİnme Yok dizini: {config.INMEYOK_DIR}")
+print(f"İnme Yok var mı: {config.INMEYOK_DIR.exists()}")
+
+if config.ISKEMI_DIR.exists():
+    iskemi_png = list(config.ISKEMI_DIR.rglob('*.png'))
+    print(f"\n✅ İskemi PNG sayısı: {len(iskemi_png)}")
+else:
+    print("\n❌ İskemi dizini bulunamadı!")
+
+if config.INMEYOK_DIR.exists():
+    inmeyok_png = list(config.INMEYOK_DIR.rglob('*.png'))
+    print(f"✅ İnme Yok PNG sayısı: {len(inmeyok_png)}")
+else:
+    print("\n❌ İnme Yok dizini bulunamadı!")
+
+# ============================================================================
+# ADIM 5: Klasörleri Oluştur
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 5: Klasörler Oluşturuluyor...")
+print("=" * 70)
+
+config.create_directories()
+print("\n✅ Tüm klasörler hazır!")
+
+# ============================================================================
+# ADIM 6: Veri Setini Hazırla
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 6: Veri Seti Hazırlanıyor...")
+print("=" * 70)
+print("⚠️ Bu işlem birkaç dakika sürebilir...")
+
+from utils import data_loader
+
+print("📦 Veri seti hazırlanıyor...")
+train_df, val_df, test_df = data_loader.load_data()
+
+print(f"\n✅ Veri bölümleme tamamlandı:")
+print(f"  Eğitim: {len(train_df)} görüntü")
+print(f"  Doğrulama: {len(val_df)} görüntü")
+print(f"  Test: {len(test_df)} görüntü")
+
+print("\n📁 Görüntüler kopyalanıyor...")
+data_loader.prepare_processed_data(train_df, val_df, test_df)
+
+print("\n✅ Veri seti hazır!")
+
+# ============================================================================
+# ADIM 7: Eğitimi Başlat
+# ============================================================================
+print("\n" + "=" * 70)
+print("ADIM 7: Eğitim Başlatılıyor... 🚀")
+print("=" * 70)
+print("⚠️ Bu işlem uzun sürebilir (20 epoch için 1-2 saat)!")
+
+!python train.py
+
+print("\n" + "=" * 70)
+print("🎉 TÜM İŞLEMLER TAMAMLANDI!")
+print("=" * 70)
+

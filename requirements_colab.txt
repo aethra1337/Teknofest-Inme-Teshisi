@@ -1,0 +1,30 @@
+# TEKNOFEST 2025 - İnme Teşhisi ve Zamansal Sınıflandırma
+# Google Colab için Optimize Edilmiş Gereksinimler
+# ⚠️ ÖNEMLİ: NumPy versiyonu TensorFlow uyumluluğu için kritiktir!
+
+# NumPy - TensorFlow uyumluluğu için özel versiyon
+numpy<1.26
+
+# Deep Learning Framework
+tensorflow==2.16.1
+keras==3.0.5
+
+# Görüntü İşleme
+opencv-python==4.9.0.80
+Pillow==10.2.0
+pydicom==2.4.4
+
+# Veri İşleme
+pandas==2.2.0
+scikit-learn==1.4.0
+
+# Görselleştirme
+matplotlib==3.8.2
+seaborn==0.13.2
+
+# Model Değerlendirme ve Metrikler
+tensorboard>=2.15.0
+
+# Yardımcı Kütüphaneler (Opsiyonel)
+tqdm>=4.66.0
+
